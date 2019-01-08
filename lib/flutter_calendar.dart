@@ -11,20 +11,24 @@ class Calendar extends StatefulWidget {
   final ValueChanged<DateTime> onDateSelected;
   final ValueChanged<Tuple2<DateTime, DateTime>> onSelectedRangeChange;
   final bool isExpandable;
+  final bool isExpanded;
   final DayBuilder dayBuilder;
   final bool showChevronsToChangeRange;
   final bool showTodayAction;
   final bool showCalendarPickerIcon;
   final DateTime initialCalendarDateOverride;
+  final List<String> weekdaysCustomLabel;
 
   Calendar(
       {this.onDateSelected,
       this.onSelectedRangeChange,
       this.isExpandable: false,
+      this.isExpanded,
       this.dayBuilder,
       this.showTodayAction: true,
       this.showChevronsToChangeRange: true,
       this.showCalendarPickerIcon: true,
+      this.weekdaysCustomLabel: Utils.weekdays,
       this.initialCalendarDateOverride});
 
   @override
@@ -43,6 +47,9 @@ class _CalendarState extends State<Calendar> {
 
   void initState() {
     super.initState();
+    if (widget.isExpanded != null) {
+      isExpanded = widget.isExpanded;
+    }
     if (widget.initialCalendarDateOverride != null)
       _selectedDate = widget.initialCalendarDateOverride;
     selectedMonthsDays = Utils.daysInMonth(_selectedDate);
@@ -132,7 +139,7 @@ class _CalendarState extends State<Calendar> {
     List<DateTime> calendarDays =
         isExpanded ? selectedMonthsDays : selectedWeeksDays;
 
-    Utils.weekdays.forEach(
+    widget.weekdaysCustomLabel.forEach(
       (day) {
         dayWidgets.add(
           new CalendarTile(
